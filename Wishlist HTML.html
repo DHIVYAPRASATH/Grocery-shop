@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wishlist</title>
+    <link rel="stylesheet" type="text/css" href="Shopping Cart CSS.css">
+    <script src="https://kit.fontawesome.com/9088cc6401.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <h1>Wishlist</h1>
+        <div class="cart">
+            <div class="products">
+                <!-- Product 1 -->
+                <div class="product" data-original-price="350" data-offer="50">
+                    <img src="https://i.imgur.com/oYbYgGQ.jpg" alt="Chakki Fresh Atta">
+                    <div class="product-info">
+                        <h3 class="product-name">Chakki Fresh Atta</h3>
+                        <h4 class="product-price">Rs. 350</h4>
+                        <h4 class="product-offer">50%</h4>
+                        <p class="product-quantity">Qnt: <input type="number" value="1" name="quantity" min="1"></p>
+                        <p class="product-remove">
+                            <i class="fas fa-trash-alt"></i>
+                            <span class="remove">Remove</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product" data-original-price="10" data-offer="20">
+                    <img src="https://i.imgur.com/mHmTIxp.jpg" alt="Maggie">
+                    <div class="product-info">
+                        <h3 class="product-name">Maggie</h3>
+                        <h4 class="product-price">Rs. 10</h4>
+                        <h4 class="product-offer">20%</h4>
+                        <p class="product-quantity">Qnt: <input type="number" value="1" name="quantity" min="1"></p>
+                        <p class="product-remove">
+                            <i class="fas fa-trash-alt"></i>
+                            <span class="remove">Remove</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-total">
+                <p><span>Total Price</span> <span>Rs. 183</span></p>
+                <p><span>No. of Items</span> <span>2</span></p>
+                <p><span>You Save</span> <span>Rs. 177</span></p>
+                <a href="Details For Checkout HTML.html">Buy Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to calculate discounted price based on offer
+        function calculateDiscountedPrice(originalPrice, offerPercentage) {
+            const discount = (originalPrice * offerPercentage) / 100;
+            return originalPrice - discount;
+        }
+
+        // Function to update the cart totals
+        function updateCart() {
+            let totalPrice = 0;
+            let totalItems = 0;
+            let totalSavings = 0;
+
+            document.querySelectorAll('.product').forEach(product => {
+                const originalPrice = parseFloat(product.getAttribute('data-original-price'));
+                const offerPercentage = parseFloat(product.getAttribute('data-offer'));
+                const quantity = parseInt(product.querySelector('.product-quantity input').value);
+
+                const discountedPrice = calculateDiscountedPrice(originalPrice, offerPercentage);
+
+                totalPrice += discountedPrice * quantity;
+                totalItems += quantity;
+                totalSavings += (originalPrice - discountedPrice) * quantity; // Calculate total savings
+            });
+
+            // Update the totals in the cart summary
+            document.querySelector('.cart-total p:nth-child(1) span:last-child').innerText = `Rs. ${totalPrice}`;
+            document.querySelector('.cart-total p:nth-child(2) span:last-child').innerText = totalItems;
+            document.querySelector('.cart-total p:nth-child(3) span:last-child').innerText = `Rs. ${totalSavings}`;
+        }
+
+        // Function to remove product from cart
+        function removeProduct(event) {
+            const product = event.target.closest('.product');
+            product.remove(); // Remove the product from the DOM
+            updateCart(); // Recalculate the cart totals
+        }
+
+        // Add event listeners to "Remove" buttons
+        document.querySelectorAll('.product-remove .remove').forEach(button => {
+            button.addEventListener('click', removeProduct);
+        });
+
+        // Add event listeners to quantity inputs
+        document.querySelectorAll('.product-quantity input').forEach(input => {
+            input.addEventListener('change', updateCart);
+        });
+
+        // Initialize cart on page load
+        updateCart();
+    </script>
+</body>
+</html>

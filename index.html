@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chroma Grocery Store</title>
+
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Fav Icon -->
+    <link rel="shortcut icon" href="images/fav-icon.png" />
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/5471644867.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Intro.js Library -->
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js" defer></script>
+
+    <!-- Internal CSS for positioning right-side navigation icons -->
+    <style>
+  /* Positioning for right navigation */
+/* Container for the search bar */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 600px; /* Restrict the max width */
+    margin: 0 auto; /* Center the search bar */
+}
+
+/* Input field styling */
+.search-input {
+    width: calc(100% - 120px); /* Adjust space for buttons */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Search button styling */
+.search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Voice search button styling */
+.voice-search-btn {
+    position: absolute;
+    right: 230px; /* Proper spacing between the button and search input */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.voice-search-btn i {
+    font-size: 20px;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect for voice search */
+.voice-search-btn:hover i {
+    color: #007bff; /* Optional: color change on hover */
+}
+
+/* Right Navigation */
+.right-nav {
+    position: fixed;
+    top: 20%;
+    right: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Individual icon styling */
+.right-nav a {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for icons */
+.right-nav a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for the icons */
+.right-nav a i {
+    font-size: 24px;
+    color: #333;
+}
+
+/* Badge for the number next to the icon */
+.right-nav a span {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Start Tutorial Button */
+.start-tutorial-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Suggestions List */
+.suggestions-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.suggestions-list li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+/* Default Light Mode */
+body {
+    background-color: #fff;
+    color: #000;
+}
+
+.menu a {
+    color: #000;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.menu a.dark-mode {
+    color: #fff;
+}
+
+/* Dark mode button styles */
+/* Default Light Mode */
+body {
+    background-color: #fff;
+    color: #000;
+}
+
+.menu a {
+    color: #000;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.menu a.dark-mode {
+    color: #fff;
+}
+
+/* Dark mode button styles */
+#dark-mode-toggle {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #000;
+}
+
+body.dark-mode #dark-mode-toggle {
+    color: #fff;
+}
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navigation">
+        <!-- Logo -->
+        <a href="#" class="logo" data-intro="Welcome to Chroma Grocery Store! This is our logo.">
+            <span>C</span>GS
+        </a>
+
+        <!-- Menu Toggle -->
+        <input type="checkbox" class="menu-btn" id="menu-btn">
+        <label for="menu-btn" class="menu-icon">
+            <span class="nav-icon"></span>
+        </label>
+
+        <!-- Menu -->
+        <ul class="menu">
+            <li><a href="index.html" class="active" data-intro="This is the Home button. Click to go back to the main page.">Home</a></li>
+            <li><a href="#category" data-intro="Explore our categories here.">Categories</a></li>
+            <li><a href="#popular-bundle-pack" data-intro="Check out our popular bundles here.">Packages</a></li>
+            <li><a href="Contact Form HTML.html" data-intro="Contact us for any inquiries or questions.">Contact&nbsp;Us</a></li>
+            <li><a href="Feedback Form HTML.html" data-intro="Share your valuable feedback here.">Feedback</a></li>
+            <li><a href="About Us HTML.html" data-intro="Learn more about us here.">About&nbsp;us</a></li>
+            <li><a href="#download-app" data-intro="Download our mobile app for a better experience.">App</a></li>
+            <li><a href="Login And Registration HTML.html" data-intro="Sign up for a new account here.">Sign&nbsp;up</a></li>
+            <li><a href="Login And Registration HTML.html" data-intro="Already have an account? Log in here.">Login</a></li>
+            <!-- Dark Mode Toggle Button -->
+            <li><button id="dark-mode-toggle" data-intro="Toggle dark mode.">🌙</button></li>
+        </ul>
+        
+    </nav>
+
+    <!-- Right Navigation (Cart, Wishlist, Profile) -->
+    <div class="right-nav">
+        <!-- Wishlist -->
+        <a href="Wishlist HTML.html" class="like" data-intro="Here is your wishlist. Click to view the products you like.">
+            <i class="fas fa-heart"></i>
+            <span>2</span>
+        </a>
+
+        <!-- Shopping Cart -->
+        <a href="Shopping Cart HTML.html" class="cart" data-intro="This is your shopping cart. Click to view and manage your cart items.">
+            <i class="fas fa-shopping-cart"></i>
+            <span>2</span>
+        </a>
+
+        <!-- User Profile -->
+        <a href="Profile HTML.html" class="user-profile" data-intro="Access your profile to manage your account and orders.">
+            <i class="fas fa-user"></i>
+            <span>1</span>
+        </a>
+    </div>
+
+    <!-- "Start Tutorial" Button -->
+    <button class="start-tutorial-btn">Start Tutorial</button>
+
+    <!-- Tutorial Script -->
+     <script>
+    // Function to toggle dark mode
+document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+    // Toggle dark-mode class on the body element
+    document.body.classList.toggle('dark-mode');
+    
+    // Change the button icon between moon and sun
+    if (document.body.classList.contains('dark-mode')) {
+        // Change to sun icon when dark mode is enabled
+        document.getElementById('dark-mode-toggle').textContent = '🌞';
+    } else {
+        // Change to moon icon when dark mode is disabled
+        document.getElementById('dark-mode-toggle').textContent = '🌙';
+    }
+
+    // Optionally, toggle dark mode on menu links
+    document.querySelectorAll('.menu a').forEach(function(link) {
+        link.classList.toggle('dark-mode');
+    });
+});
+
+
+     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create the "Start Tutorial" button
+            const startTutorialButton = document.querySelector('.start-tutorial-btn');
+
+            // Start the tutorial when the button is clicked
+            startTutorialButton.addEventListener('click', function () {
+                introJs().setOptions({
+                    steps: [
+                        { intro: "Welcome to Chroma Grocery Store! Let's take a tour of our website." },
+                        { element: '.logo', intro: "This is our logo. Click to return to the main page." },
+                        { element: 'a[href="index.html"]', intro: "This is the Home button. Click to return to the homepage." },
+                        { element: 'a[href="#category"]', intro: "Browse our product categories here." },
+                        { element: 'a[href="#popular-bundle-pack"]', intro: "Find our most popular packages here." },
+                        { element: 'a[href="Contact Form HTML.html"]', intro: "Reach out to us using the Contact Us form." },
+                        { element: 'a[href="Feedback Form HTML.html"]', intro: "We value your feedback. Share your thoughts here." },
+                        { element: 'a[href="About Us HTML.html"]', intro: "Learn more about our mission and services." },
+                        { element: 'a[href="#download-app"]', intro: "Download our app for seamless shopping." },
+                        { element: 'a[href="Login And Registration HTML.html"]:nth-of-type(1)', intro: "Sign up for a new account here." },
+                        { element: 'a[href="Login And Registration HTML.html"]:nth-of-type(2)', intro: "Log in if you already have an account." },
+                    ],
+                    showStepNumbers: true,
+                    showBullets: true,
+                    nextLabel: "Next",
+                    prevLabel: "Previous",
+                    doneLabel: "Finish"
+                }).start();
+            });
+        });
+    </script>
+
+<script>
+    const categories = {
+        "Fruits and Vegetables": ["Apple", "Chilli", "Onion", "Potato", "Oranges", "Tomato", "Green Chilli", "Broccoli", "Cabbage", "Brinjal", "Carrot", "Cauli Flower"],
+        "Medicines": ["Cetrizine 10 mg", "Cufril-D Cough Syrup", "Cheston Cold", "Dolo 650", "Metolar XE 50", "Gelusil Chewable Tablets", "ORS Powder", "Band-Aid Strips", "Volini Pain Relief Spray", "Paracetamol 500mg", "Betadine Antiseptic Liquid", "Vicks Vaporub"],
+        "Baby Care Products": ["Johnson's Baby Oil", "Little's Baby Wipes", "Mama Earth Baby Moisturizer", "Himalaya Baby Shampoo", "Johnson's Baby Powder", "Pampers Baby Pants", "Chicco Baby Feeding Bottle", "Sebamed Baby Lotion", "Mee Mee Baby Bibs", "Philips Avent Pacifier", "Huggies Diaper Pants", "Johnson's Baby Soap"],
+        "Stationery": ["Scotch Tape", "Desk Organizer", "Whiteboard Markers", "Sharpie Permanent Markers", "A4 Paper (Reams)", "Pilot G-2 Gel Pen", "Kangaroo Stapler No.-10", "Kangaroo Punching Machine", "Natraj HB Pencils", "Natraj Ball Pens", "Post It Sticky Notes", "Kangaroo Stapler Pins No.-10"],
+        "Beauty": ["Ponds Men Pollution Out Facewash", "Lakme Blush and Glow Face Wash", "Nivea Body Milk", "Nivea Lip Balm", "Berado Hair Growth Oil", "Olay Total Effects Day Cream", "Maybelline New York Fit Me Foundation", "L'Oreal Paris Revitalift Serum", "Dove Nourishing Body Wash", "Neutrogena Hydro Boost Water Gel", "Bioderma Sensibio H2O Micellar Water", "Himalaya Herbal Face Pack"],
+        "Gardening Products": ["Gardening Gloves", "Watering Can", "Unigrow Manure", "Garden Hoe", "Pruning Shears", "Soil pH Tester", "Garden Trowel", "Plant Sprayer", "Seed Starter Kit", "Garden Fork"]
+    };
+
+    const categoryPages = {
+        "Fruits and Vegetables": "Fruits.html",
+        "Medicines": "Medicine Category Page HTML.html",
+        "Baby Care Products": "Baby Care Category Page HTML.html",
+        "Stationery": "Office Category Page HTML.html",
+        "Beauty": "Beauty Category Page HTML.html",
+        "Gardening Products": "Gardening Category Page HTML.html"
+    };
+
+    function showSuggestions(event) {
+        const input = event.target.value.toLowerCase();
+        const suggestions = document.getElementById("suggestions");
+        suggestions.innerHTML = ''; // Clear previous suggestions
+
+        if (!input) {
+            suggestions.style.display = 'none';
+            return;
+        }
+
+        let suggestionFound = false;
+
+        for (let category in categories) {
+            categories[category].forEach(item => {
+                if (item.toLowerCase().includes(input)) {
+                    const suggestion = document.createElement("li");
+                    suggestion.textContent = item;
+                    suggestion.onclick = () => {
+                        window.location.href = categoryPages[category];
+                    };
+                    suggestions.appendChild(suggestion);
+                    suggestionFound = true;
+                }
+            });
+        }
+
+        suggestions.style.display = suggestionFound ? 'block' : 'none';
+    }
+
+    function startVoiceSearch() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = (event) => {
+        // Normalize the transcript by removing punctuation and extra spaces
+        let transcript = event.results[0][0].transcript.toLowerCase().trim();
+        transcript = transcript.replace(/[.,!]/g, ""); // Remove common punctuation
+
+        let pageFound = false;
+
+        // Check the voice input against product names and navigate to the page
+        for (let category in categories) {
+            categories[category].forEach(item => {
+                if (item.toLowerCase().includes(transcript) || transcript.includes(item.toLowerCase())) {
+                    pageFound = true;
+                    window.location.href = categoryPages[category];
+                }
+            });
+        }
+
+        // If no match is found, update the search input and show suggestions
+        if (!pageFound) {
+            const searchInput = document.getElementById("search-input");
+            searchInput.value = transcript;
+            searchInput.dispatchEvent(new Event("input")); // Trigger input event
+        }
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech recognition error: ", event.error);
+    };
+}
+
+
+</script>
+
+        <!--nav-end--------------------->
+        <!--==Search-banner=======================================-->
+        <section id="search-banner">
+
+            <!--bg--------->
+            <img alt="bg" class="bg-1" src="https://i.imgur.com/h8pXo1s.png">
+
+            <img alt="bg" class="bg-1_rev" src="https://i.imgur.com/h8pXo1s.png">
+
+            <img alt="bg-2" class="bg-2" src="https://i.imgur.com/2smuQIz.png">
+
+            <!--text------->
+            <div class="search-banner-text">
+
+                <h1>
+                    
+                    Order Your daily Groceries
+                
+                </h1>
+
+                <strong>
+                    
+                    #Free Delivery
+                
+                </strong>
+
+                <!--search-box------>
+                <form action="" class="search-box" style="position:relative;">
+                    <i class="fas fa-search"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="Search for groceries..." 
+                        name="search" 
+                        autocomplete="off" 
+                        oninput="showSuggestions(event)" 
+                        required>
+                    <button type="button" class="voice-search-btn" onclick="startVoiceSearch()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <input type="submit" class="search-btn" value="Search">
+                    <ul id="suggestions" class="suggestions-list" style="display: none;"></ul>
+                </form>
+                
+                <br>
+
+                 <h3> 
+
+                    <a href = 'Best Deals HTML.html' style = 'color: #40aa54'>
+
+                        Click here to learn about today's best deals
+
+                    </a>
+
+                </h3> 
+
+            </div>
+
+        </section>
+
+        <!--search-banner-end--------------->
+
+        
+        <!--==category=========================================-->
+        <section id="category">
+
+            <!--heading---------------->
+            <div class="category-heading">
+
+                <h2>
+                    
+                    Category
+                
+                </h2>
+
+                <span>
+                    
+                    All
+                
+                </span>
+
+            </div>
+
+            <!--box-container---------->
+            <div class="category-container">
+
+                <!--box---------------->
+                <a class="category-box" href = 'Fruits.html'>
+					<img alt="Fruits and Vegetables" src="https://i.imgur.com/lvk68rp.png">
+					<span>Fruits & <br> Vegetables</span>
+				</a>
+				<!--box---------------->
+                <a class="category-box" href = 'Medicine Category Page HTML.html'>
+                    <img alt="Medicines" src="https://i.imgur.com/4sjlmg3.png">
+                    <span>Medicine</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="Baby Care Category Page HTML.html">
+                    <img alt="Baby Care Products" src="https://i.imgur.com/uvd01HH.png">
+                    <span>Baby Care</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href = 'Office Category Page HTML.html'>
+                    <img alt="Fish" src="https://i.imgur.com/N5a3WUT.png">
+                    <span>Stationary</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href = 'Beauty Category Page HTML.html'>
+                    <img alt="Beauty Products" src="https://i.imgur.com/Bm0yLex.png">
+                    <span>Beauty</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href = 'Gardening Category Page HTML.html'>
+                    <img alt="Gardening Products" src="https://i.imgur.com/AjGulv5.png">
+                    <span>Gardening</span>
+                </a>
+            </div>
+            
+        </section>
+        <!--category-end----------------------------------->
+        <!--==Products====================================-->
+        <section id="popular-product">
+            <!--heading-->
+            <div class="product-heading">
+                <h3>Popular Product</h3>
+                <span>All</span>
+            </div>
+            <!--dynamic container-->
+            <div id="popular-product-container" class="product-container"></div>
+        </section>
+        
+        <section id="popular-bundle-pack">
+            <!--heading-->
+            <div class="product-heading">
+                <h3>Popular Bundle Pack</h3>
+            </div>
+            <!--dynamic container-->
+            <div id="popular-bundle-container" class="product-container"></div>
+        </section>
+        
+        <!--popular-bundle-pack-end-------------------------------->
+        <!--==Clients===============================================-->
+        <section id="clients">
+            <!--heading---------------->
+            <div class="client-heading">
+                <h3>What Our Clients Say</h3>
+            </div>
+            <!--box-container---------->
+            <div class="client-box-container">
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="https://i.imgur.com/FNVH9z6.jpg">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>James Mcavoy</strong>
+                            <span>CEO</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>Chroma Grocery Store is the best. CGS never fails to dissapoint me. Grocery shopping has become so easy with Chroma Grocery Store.</Str></p>
+                </div>
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="https://i.imgur.com/3yv9Hkj.jpg">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>Sameer Sharma</strong>
+                            <span>Software Developer</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>Chroma Grocery Store is just amazing. I can buy all my groceries from a single place. The groceries are available at very affordable prices. And, the groceries are delivered at the time slot you choose and prefer.</p>
+                </div>
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="https://i.imgur.com/Rk5RDey.jpg">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>Ava Alex</strong>
+                            <span>Marketer</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>At Chroma Grocery Store, you can get fresh fruits and vegetables. And it is not only about fruits or vegetables, you can buy all kinds of stuff here.</p>
+                </div>
+            </div>
+        </section>
+        <!--client-section-end---------->
+        <!--==Partnre-logo================================-->
+        <section id="partner">
+            <!--heading------------>
+            <div class="partner-heading">
+                <h3>Our Trusted Partner</h3>
+            </div>
+            <!--logo-container----->
+            <div class="logo-container">
+                <img alt="logo" src="https://i.imgur.com/iUOPVpm.png">
+                <img alt="logo" src="https://i.imgur.com/kyp2UKO.png">
+                <img alt="logo" src="https://i.imgur.com/072qc5v.png">
+                <img alt="logo" src="https://i.imgur.com/AADIKZS.png">
+            </div>
+        </section>
+        <!--logo-section-end--------------------->
+        <!--==download-app====================================-->
+        <section id="download-app">
+            <!--img----------------------->
+            <div class="app-img">
+                <img alt="app" src="https://i.imgur.com/nxe85eq.png">
+            </div>
+            <!--text---------------------->
+            <div class="download-app-text">
+                <strong>Download App</strong>
+                <p>Grocery shopping made easier. Now, you don't need to open the website for placing orders. Download the <b>Chroma Grocery Store</b> app from Play Store and App Store to start shopping easily and faster. <br> HAPPY SHOPPING!</b></p>
+                <!--btns------->
+                <div class="download-btns">
+                    <a href="https://www.apple.com/in/app-store/"><img alt="" src="https://i.imgur.com/dMsRGJH.png"></a>
+                    <a href="https://play.google.com/store"><img alt="" src="https://i.imgur.com/puDrZNe.png"></a>
+                </div>
+            </div>
+        </section>
+        <!--download-app-section-end------------------------->
+        <!--==Footer=============================================-->
+        <footer>
+            <div class="footer-container">
+                <!--logo-container------>
+                <div class="footer-logo">
+                    <a href="file:///C:/Users/RAGHAV/Desktop/Coding/Grocery/Logo.png"><span>C</span>GS</a>
+                    <!--social----->
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/?lang=en-in"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <!--links------------------------->
+            <div class="footer-links">
+                <strong>Product</strong>
+                <ul>
+                    <li><a href="#">Grocery</a></li>
+                    <li><a href="#">Packages</a></li>
+                    <li><a href="#">Popular</a></li>
+                    <li><a href="#">New</a></li>
+                </ul>
+            </div>
+            <!--links------------------------->
+            <div class="footer-links">
+                <strong>Category</strong>
+                <ul>
+                    <li><a href="#">Beauty</a></li>
+                    <li><a href="#">Vegetables</a></li>
+                    <li><a href="#">Baby</a></li>
+                    <li><a href="#">Medicine</a></li>
+                </ul>
+            </div>
+            <!--links-------------------------->
+            <div class="footer-links">
+                <strong>Contact</strong>
+                <ul>
+                    <li><a href="#">Phone : +123456789</a></li>
+                    <li><a href="#">Email : chromagrocery@gmail.com</a></li>
+                    <li><a href="#">Cities we serve</a></li>
+                </ul>
+				<br><p style="color: aliceblue;">Copyright ©2024 | All Rights Reserved</p>
+            </div>
+            </div>
+        </footer>
+        <script>
+            const popularProducts = [
+                { name: "Apple", imgUrl: "https://i.imgur.com/vUJ2JKU.png", quantity: "1 KG", price: 100 ,offerPercentage:5},
+                { name: "Chili", imgUrl: "https://i.imgur.com/rFhSMZN.png", quantity: "1 KG", price: 80 ,offerPercentage:5},
+                { name: "Onion", imgUrl: "https://i.imgur.com/sGLggWL.jpg", quantity: "1 KG", price: 50 ,offerPercentage:5},
+                { name: "Potato", imgUrl: "https://i.imgur.com/WFjH6ui.png", quantity: "1 KG", price: 60 ,offerPercentage:5},
+                { name: "Garlic", imgUrl: "https://i.imgur.com/XVLuy2J.png", quantity: "1 KG", price: 50 ,offerPercentage:5},
+                { name: "Tomato", imgUrl: "https://i.imgur.com/8l5hDhS.png", quantity: "1 KG", price: 80 ,offerPercentage:5}
+            ];
+        
+            const popularBundles = [
+                { name: "Big Pack 1", imgUrl: "https://i.imgur.com/Zm8Xo2j.png", quantity: "Lemon, Tomato, Potato,+4", price: 500 ,offerPercentage:5},
+                { name: "Large Pack 1", imgUrl: "https://i.imgur.com/vMA9mRm.jpg", quantity: "Lemon, Tomato, Potato,+2", price: 800 ,offerPercentage:5},
+                { name: "Small Pack 1", imgUrl: "https://i.imgur.com/CeVqxe2.png", quantity: "Lemon, Tomato, Potato", price: 300 ,offerPercentage:5},
+                { name: "Big Pack 2", imgUrl: "https://i.imgur.com/Zm8Xo2j.png", quantity: "Lemon, Tomato, Potato,+4", price: 900 ,offerPercentage:5},
+                { name: "Large Pack 2", imgUrl: "https://i.imgur.com/vMA9mRm.jpg", quantity: "Lemon, Tomato, Potato,+2", price: 700 ,offerPercentage:5},
+                { name: "Small Pack 2", imgUrl: "https://i.imgur.com/CeVqxe2.png", quantity: "Lemon, Tomato, Potato", price: 400 ,offerPercentage:5}
+            ];
+        
+            function renderProducts(containerId, products) {
+                const container = document.getElementById(containerId);
+                products.forEach(product => {
+                    const productBox = document.createElement("div");
+                    productBox.className = "product-box";
+                
+                    productBox.innerHTML = `
+                        <img alt="${product.name}" src="${product.imgUrl}">
+                        <strong>${product.name}</strong>
+                        <span class="quantity">${product.quantity}</span>
+                        <span class="price">Rs. ${product.price}</span>
+                        <a href="" class="cart-btn add-to-cart">
+                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                        </a>
+                        <a class="like-btn">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    `;
+        
+                    container.appendChild(productBox);
+
+                    const addToCartBtn = productBox.querySelector('.add-to-cart');
+                    addToCartBtn.addEventListener('click', () => addToCart(product));
+                });
+            }
+
+            function addToCart(product) {
+                // Log the product for debugging
+                console.log('Adding to cart:', product);
+
+                // Get the cart from localStorage or initialize it as an empty array
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                // Check if the product is already in the cart
+                const existingProductIndex = cart.findIndex(item => item.name === product.name);
+                if (existingProductIndex !== -1) {
+                    // If product already exists in the cart, increase the count
+                    cart[existingProductIndex].count++;
+                } else {
+                    // Otherwise, add new product to the cart
+                    cart.push({ ...product, count: 1 });
+                }
+
+                // Save the updated cart back to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                let simpleCart = JSON.parse(localStorage.getItem('cart'));
+                console.log(simpleCart);
+                
+
+                alert(`${product.name} has been added to the cart!`);
+            }
+        
+            document.addEventListener("DOMContentLoaded", () => {
+                renderProducts("popular-product-container", popularProducts);
+                renderProducts("popular-bundle-container", popularBundles);
+            });
+        </script>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDS35wVNwMCu6TXc6451uNYzLtZlq64xGY",
+      authDomain: "cgs-project-cd2d8.firebaseapp.com",
+      projectId: "cgs-project-cd2d8",
+      storageBucket: "cgs-project-cd2d8.firebasestorage.app",
+      messagingSenderId: "608402521117",
+      appId: "1:608402521117:web:0b6e060788bc19cde91af4",
+      measurementId: "G-9YCS1XK8T9"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+        
+    </body>
+</html>
